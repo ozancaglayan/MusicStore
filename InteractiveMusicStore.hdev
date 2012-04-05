@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hdevelop file_version="1.0" halcon_version="10.0" cs="568451019">
+<procedure name="main">
+<interface/>
+<body>
+<c>* Galatasaray University</c>
+<c>* MSc. in Computer Engineering</c>
+<c>* Computer Vision Course</c>
+<c>* 11411001 - Ozan Caglayan</c>
+<c>*</c>
+<c>*</c>
+<c>* Detect QR codes from webcam. The QR codes has embed codes for</c>
+<c>* Youtube videos for now.</c>
+<c></c>
+<c></c>
+<c></c>
+<c>* Open the framegrabber device and set parameters</c>
+<l as_id="image_acquisition" as_name="Image Acquisition 01" as_grp="[1,2]" as_ord="1">open_framegrabber ('DirectShow', 1, 1, 0, 0, 0, 0, 'default', 8, 'rgb', -1, 'false', 'default', 'SoC PC-Camera', 0, -1, AcqHandle)</l>
+<l as_id="image_acquisition" as_name="Image Acquisition 01" as_grp="[2,1]" as_ord="1">grab_image_start (AcqHandle, -1)</l>
+<l>grab_image_async (Image, AcqHandle, -1)</l>
+<l>get_image_size (Image, Width, Height)</l>
+<l>dev_open_window_fit_image (Image, 0, 0, Width, Height, WindowHandle)</l>
+<l>set_display_font (WindowHandle, 14, 'courier', 'true', 'false')</l>
+<l>dev_set_line_width (2)</l>
+<l>dev_set_color ('green')</l>
+<c></c>
+<l>create_data_code_2d_model ('QR Code', [], [], DataCodeHandle)</l>
+<c></c>
+<l>set_data_code_2d_param (DataCodeHandle, 'default_parameters', 'enhanced_recognition')</l>
+<l>* set_data_code_2d_param (DataCodeHandle, 'default_parameters', 'standard_recognition')</l>
+<c></c>
+<c>* </c>
+<c>* Loop over the images of the image sequence</c>
+<c>* </c>
+<l as_id="image_acquisition" as_name="Image Acquisition 01" as_grp="[2,2]" as_ord="1">while (true)</l>
+<c>    * </c>
+<c>    * read the next image</c>
+<c>    * </c>
+<l as_id="image_acquisition" as_name="Image Acquisition 01" as_grp="[2,3]" as_ord="1">    grab_image_async (Image, AcqHandle, -1)</l>
+<l>    get_image_size (Image, Width, Height)</l>
+<l>    find_data_code_2d (Image, SymbolXLDs, DataCodeHandle, [], [], ResultHandles, DecodedDataStrings)</l>
+<l>    dev_display (Image)</l>
+<l>    * dev_display (SymbolXLDs)</l>
+<l>    for i := 0 to |ResultHandles| - 1 by 1</l>
+<l>        select_obj (SymbolXLDs, SymbolXLD, i+1)</l>
+<l>        get_contour_xld (SymbolXLD, Row, Col)</l>
+<l>        get_string_extents (WindowHandle, DecodedDataStrings[i], Ascent, Descent, TxtWidth, TxtHeight)</l>
+<l>        disp_message (WindowHandle, DecodedDataStrings[i], 'image', max(Row), max([min(Col)-TxtWidth/2,1]), 'green', 'false')</l>
+<l>    endfor</l>
+<l as_id="image_acquisition" as_name="Image Acquisition 01" as_grp="[3,1]" as_ord="1">endwhile</l>
+<c></c>
+<l>dev_close_window()</l>
+<l>close_framegrabber (AcqHandle)</l>
+<l>clear_data_code_2d_model (DataCodeHandle)</l>
+<c></c>
+</body>
+<docu id="main">
+<parameters/>
+</docu>
+</procedure>
+</hdevelop>
